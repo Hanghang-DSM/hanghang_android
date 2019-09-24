@@ -63,8 +63,6 @@ public class CodyPlusActivity extends AppCompatActivity {
 
     private File tempFile;
 
-    static byte id = 0;
-    static byte sent_id = 0;
     static boolean imageSignId = true;
 
     int pariedDeviceCount;
@@ -120,8 +118,7 @@ public class CodyPlusActivity extends AppCompatActivity {
         btn_regi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sent_id = id;
-                sendData(id++);
+                sendData(Id.id);
                 UploadImageFileToFirebaseStorage();
             }
         });
@@ -234,7 +231,7 @@ public class CodyPlusActivity extends AppCompatActivity {
 
                                     @SuppressWarnings("VisibleForTests")
                                     com.stac.hanghangtwo.ImageUploadInfo imageUploadInfo = new com.stac.hanghangtwo.ImageUploadInfo(TempImageName,
-                                            photoStringLink, sent_id, imageSignId);
+                                            photoStringLink, Id.id++, imageSignId);
 
                                     // Getting image upload ID.
                                     String ImageUploadId = databaseReference.push().getKey();
