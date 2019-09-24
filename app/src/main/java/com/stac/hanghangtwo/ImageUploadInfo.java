@@ -7,15 +7,18 @@ public class ImageUploadInfo {
 
     public int imageId;
 
+    public boolean imageSign;
+
     public ImageUploadInfo() {
 
     }
 
-    public ImageUploadInfo(String name, String url, int id) {
+    public ImageUploadInfo(String name, String url, int id, boolean sign) {
 
         this.imageName = name;
         this.imageURL = url;
         this.imageId = id;
+        this.imageSign = sign;
     }
 
     public String getImageName() {
@@ -28,5 +31,9 @@ public class ImageUploadInfo {
 
     public int getImageId() {
         return imageId;
+    }
+
+    public boolean getImageSign() {
+        return imageSign;
     }
 }

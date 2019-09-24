@@ -65,6 +65,7 @@ public class CodyPlusActivity extends AppCompatActivity {
 
     static byte id = 0;
     static byte sent_id = 0;
+    static boolean imageSignId = true;
 
     int pariedDeviceCount;
 
@@ -233,7 +234,7 @@ public class CodyPlusActivity extends AppCompatActivity {
 
                                     @SuppressWarnings("VisibleForTests")
                                     com.stac.hanghangtwo.ImageUploadInfo imageUploadInfo = new com.stac.hanghangtwo.ImageUploadInfo(TempImageName,
-                                            photoStringLink, sent_id);
+                                            photoStringLink, sent_id, imageSignId);
 
                                     // Getting image upload ID.
                                     String ImageUploadId = databaseReference.push().getKey();
