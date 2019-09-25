@@ -1,5 +1,7 @@
 package com.stac.hanghangtwo.adapter
 
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -13,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.stac.hanghangtwo.Entity.ImageUploadInfo
 import com.stac.hanghangtwo.R
+import com.stac.hanghangtwo.util.Id
+import java.util.*
 
 class FindClothAdapter (
         val context : Context,
@@ -47,7 +51,21 @@ class FindClothAdapter (
             clothBackground.setOnClickListener {
                 it.setBackgroundColor(ContextCompat.getColor(v.context,R.color.findSelect))
                 clothName.setTextColor(Color.WHITE)
+                val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+                val bluetoothSocket = bluetoothAdapter
+                        .bondedDevices
+                        .filter { it.name=="HANGHANG" }
+                        .get(0)
+                        .createRfcommSocketToServiceRecord(UUID.fromString(Id.uuid))
+                bluetoothSocket.connect()
+                communicationBluetooth(bluetoothSocket)
+
+                bluetoothSocket.close()
             }
+        }
+        fun communicationBluetooth(socket : BluetoothSocket) {
+            val inputStream = socket.inputStream
+            val outputStream = socket.outputStream
         }
     }
 }
