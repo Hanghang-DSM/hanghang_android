@@ -1,30 +1,33 @@
 package com.stac.hanghangtwo;
 
-
-
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.io.IOException;
-
 import java.io.OutputStream;
-
 import com.stac.hanghangtwo.Entity.ClothInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import com.google.gson.Gson;
 import com.stac.hanghangtwo.adapter.FindClothAdapter;
 
@@ -65,8 +68,6 @@ public class FindActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_ENABLE_BT);
             }
         }
-    
-        listView = findViewById(R.id.listview_Image);
             final RecyclerView recyclerView = findViewById(R.id.find_recyclerview);
             recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         initDatabase();
