@@ -1,4 +1,4 @@
-package com.stac.hanghangtwo;
+package com.stac.hanghangtwo.Entity;
 
 public class ImageUploadInfo {
     public String imageName;
@@ -7,7 +7,7 @@ public class ImageUploadInfo {
 
     public int imageId;
 
-    public boolean imageSign;
+    public boolean imageSign; // true : 옷걸이에 걸려있는 상태.
 
     public ImageUploadInfo() {
 

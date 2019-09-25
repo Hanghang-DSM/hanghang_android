@@ -23,16 +23,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.io.OutputStream;
-import com.stac.hanghangtwo.Entity.ClothInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import com.google.gson.Gson;
+import com.stac.hanghangtwo.Entity.ImageUploadInfo;
 import com.stac.hanghangtwo.adapter.FindClothAdapter;
 
 public class FindActivity extends AppCompatActivity {
-
     // For Bluetooth
     private static final int REQUEST_ENABLE_BT = 10; // 블루투스 활성화 상태
     private BluetoothAdapter bluetoothAdapter; // 블루투스 어댑터
@@ -48,7 +47,9 @@ public class FindActivity extends AppCompatActivity {
     private DatabaseReference mReference;
     private ChildEventListener mChild;
     
-    List<ClothInfo> Array = new ArrayList<>();
+    List<ImageUploadInfo> Array = new ArrayList<>();
+
+
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,7 +79,7 @@ public class FindActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Gson gson = new Gson();
                 for (DataSnapshot photoData : dataSnapshot.getChildren()) {
-                    ClothInfo imageName = gson.fromJson(photoData.getValue().toString(),ClothInfo.class);
+                    ImageUploadInfo imageName = gson.fromJson(photoData.getValue().toString(),ImageUploadInfo.class);
                     Array.add(imageName);
                 }
                 recyclerView.setAdapter(new FindClothAdapter(FindActivity.this,Array));
