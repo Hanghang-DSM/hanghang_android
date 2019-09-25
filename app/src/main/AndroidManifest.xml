@@ -27,17 +27,17 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name="com.stac.hanghangtwo.LoadingActivity">
+        <activity android:name="com.stac.hanghangtwo.activity.LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.stac.hanghangtwo.SubActivity"/>
-        <activity android:name="com.stac.hanghangtwo.MainActivity"/>
-        <activity android:name="com.stac.hanghangtwo.FindActivity"/>
-        <activity android:name="com.stac.hanghangtwo.CodyPlusActivity"/>
+        <activity android:name="com.stac.hanghangtwo.activity.SubActivity"/>
+        <activity android:name="com.stac.hanghangtwo.activity.MainActivity"/>
+        <activity android:name="com.stac.hanghangtwo.activity.FindActivity"/>
+        <activity android:name="com.stac.hanghangtwo.activity.CodyPlusActivity"/>
     </application>
 
 </manifest>
