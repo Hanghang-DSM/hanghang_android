@@ -1,4 +1,4 @@
-package com.stac.hanghangtwo;
+package com.stac.hanghangtwo.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.UUID;
 import com.google.gson.Gson;
 import com.stac.hanghangtwo.Entity.ImageUploadInfo;
+import com.stac.hanghangtwo.R;
 import com.stac.hanghangtwo.adapter.FindClothAdapter;
 
 public class FindActivity extends AppCompatActivity {

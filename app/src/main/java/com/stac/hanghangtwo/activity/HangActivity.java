@@ -1,9 +1,11 @@
-package com.stac.hanghangtwo;
+package com.stac.hanghangtwo.activity;
 
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.stac.hanghangtwo.R;
 
 public class HangActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.stac.hanghangtwo;
+package com.stac.hanghangtwo.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.stac.hanghangtwo.R;
 
 import java.util.ArrayList;
 import java.util.List;

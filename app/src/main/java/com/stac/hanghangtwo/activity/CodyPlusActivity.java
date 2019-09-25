@@ -1,4 +1,4 @@
-package com.stac.hanghangtwo;
+package com.stac.hanghangtwo.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,9 +13,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -26,10 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -39,13 +34,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.stac.hanghangtwo.Entity.ImageUploadInfo;
+import com.stac.hanghangtwo.util.Id;
+import com.stac.hanghangtwo.R;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -230,7 +226,7 @@ public class CodyPlusActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Image Uploaded Successfully ", Toast.LENGTH_LONG).show();
 
                                     @SuppressWarnings("VisibleForTests")
-                                    com.stac.hanghangtwo.ImageUploadInfo imageUploadInfo = new com.stac.hanghangtwo.ImageUploadInfo(TempImageName,
+                                    ImageUploadInfo imageUploadInfo = new ImageUploadInfo(TempImageName,
                                             photoStringLink, Id.id++, imageSignId);
 
                                     // Getting image upload ID.

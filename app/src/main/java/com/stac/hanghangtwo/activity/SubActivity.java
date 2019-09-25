@@ -1,4 +1,4 @@
-package com.stac.hanghangtwo;
+package com.stac.hanghangtwo.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.stac.hanghangtwo.R;
 
 public class SubActivity extends AppCompatActivity {
 
