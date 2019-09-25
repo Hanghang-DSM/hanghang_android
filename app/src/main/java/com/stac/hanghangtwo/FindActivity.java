@@ -3,13 +3,13 @@ package com.stac.hanghangtwo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -17,9 +17,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import com.stac.hanghangtwo.Entity.ClothInfo;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.stac.hanghangtwo.adapter.FindClothAdapter;
 
 public class FindActivity extends AppCompatActivity {
 
@@ -29,16 +32,15 @@ public class FindActivity extends AppCompatActivity {
     private DatabaseReference mReference;
     private ChildEventListener mChild;
 
-    private ListView listView;
-    private ArrayAdapter<String> adapter;
-    List<Object> Array = new ArrayList<Object>();
+    List<ClothInfo> Array = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find);
 
-        listView = findViewById(R.id.listview_Image);
+        final RecyclerView recyclerView = findViewById(R.id.find_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
 
         initDatabase();
 
@@ -46,17 +48,12 @@ public class FindActivity extends AppCompatActivity {
         mReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                adapter.clear();
-
+                Gson gson = new Gson();
                 for (DataSnapshot photoData : dataSnapshot.getChildren()) {
-                    String imageName = photoData.getValue().toString();
+                    ClothInfo imageName = gson.fromJson(photoData.getValue().toString(),ClothInfo.class);
                     Array.add(imageName);
-                    adapter.add(imageName);
                 }
-
-                adapter.notifyDataSetChanged();
-                listView.setSelection(adapter.getCount() - 1);
-
+                recyclerView.setAdapter(new FindClothAdapter(FindActivity.this,Array));
             }
 
             @Override
@@ -64,10 +61,6 @@ public class FindActivity extends AppCompatActivity {
 
             }
         });
-
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
-        listView.setAdapter(adapter);
-
         img_new_cloth = findViewById(R.id.img_new_cloth);
         img_new_cloth.setOnClickListener(new View.OnClickListener() {
             @Override
