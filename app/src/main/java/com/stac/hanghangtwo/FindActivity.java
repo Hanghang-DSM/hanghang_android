@@ -1,21 +1,12 @@
 package com.stac.hanghangtwo;
 
-import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -25,11 +16,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+
 import java.io.OutputStream;
+
+import com.stac.hanghangtwo.Entity.ClothInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import com.google.gson.Gson;
+import com.stac.hanghangtwo.adapter.FindClothAdapter;
 
 public class FindActivity extends AppCompatActivity {
 
@@ -41,24 +38,19 @@ public class FindActivity extends AppCompatActivity {
     private BluetoothSocket bluetoothSocket = null; // 블루투스 소켓
     private OutputStream outputStream = null; // 블루투스에 데이터를 출력하기 위한 출력 스트림
     int pariedDeviceCount;
-
+    
     ImageView img_new_cloth;
-
+    
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
     private ChildEventListener mChild;
-
-    private ListView listView;
-    private ArrayAdapter<String> adapter;
-    List<Object> Array = new ArrayList<Object>();
-
+    
+    List<ClothInfo> Array = new ArrayList<>();
+    
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find);
-
-        // 블루투스 활성화하기
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         if(bluetoothAdapter == null) { // 디바이스가 블루투스를 지원하지 않을 때
             Toast.makeText(FindActivity.this, "디바이스가 블루투스를 지원하지 않습니다.", Toast.LENGTH_SHORT).show();
@@ -73,37 +65,29 @@ public class FindActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_ENABLE_BT);
             }
         }
-
+    
         listView = findViewById(R.id.listview_Image);
-
+            final RecyclerView recyclerView = findViewById(R.id.find_recyclerview);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         initDatabase();
-
+    
         mReference = mDatabase.getReference("All_Image_Uploads_Database"); // 변경값을 확인할 child 이름
         mReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                adapter.clear();
-
+                Gson gson = new Gson();
                 for (DataSnapshot photoData : dataSnapshot.getChildren()) {
-                    String imageName = photoData.getValue().toString();
+                    ClothInfo imageName = gson.fromJson(photoData.getValue().toString(),ClothInfo.class);
                     Array.add(imageName);
-                    adapter.add(imageName);
                 }
-
-                adapter.notifyDataSetChanged();
-                listView.setSelection(adapter.getCount() - 1);
-
+                recyclerView.setAdapter(new FindClothAdapter(FindActivity.this,Array));
             }
-
+    
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+    
             }
         });
-
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
-        listView.setAdapter(adapter);
-
         img_new_cloth = findViewById(R.id.img_new_cloth);
         img_new_cloth.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,58 +96,58 @@ public class FindActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+    
     }
-
+    
     private void initDatabase() {
-
+    
         mDatabase = FirebaseDatabase.getInstance();
-
+    
         mReference = mDatabase.getReference("log");
         mReference.child("log").setValue("check");
-
+    
         mChild = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+    
             }
-
+    
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+    
             }
-
+    
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+    
             }
-
+    
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+    
             }
-
+    
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+    
             }
         };
         mReference.addChildEventListener(mChild);
     }
-
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mReference.removeEventListener(mChild);
     }
-
+    
     // 블루투스
     public void selectBluetoothDevice() {
         // 이미 페어링 되어있는 블루투스 기기를 찾습니다.
         devices = bluetoothAdapter.getBondedDevices();
         // 페어링 된 디바이스의 크기를 저장
         pariedDeviceCount = devices.size();
-
+    
         // 페어링 되어있는 장치가 없는 경우
         if(pariedDeviceCount == 0) {
             // 페어링을 하기위한 함수 호출
@@ -181,7 +165,7 @@ public class FindActivity extends AppCompatActivity {
             // List를 CharSequence 배열로 변경
             final CharSequence[] charSequences = list.toArray(new CharSequence[list.size()]);
             list.toArray(new CharSequence[list.size()]);
-
+    
             // 해당 아이템을 눌렀을 때 호출 되는 이벤트 리스너
             builder.setItems(charSequences, new DialogInterface.OnClickListener() {
                 @Override
@@ -197,7 +181,7 @@ public class FindActivity extends AppCompatActivity {
             alertDialog.show();
         }
     }
-
+    
     public void connectDevice(String deviceName) {
         // 페어링 된 디바이스들을 모두 탐색
         for(BluetoothDevice tempDevice : devices) {
@@ -219,7 +203,7 @@ public class FindActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
+    
     void sendData(byte b) {
         try{
             // 데이터 송신
