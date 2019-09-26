@@ -33,14 +33,14 @@ import com.stac.hanghangtwo.R;
 import com.stac.hanghangtwo.adapter.FindClothAdapter;
 
 public class FindActivity extends AppCompatActivity {
-    // For Bluetooth
+    /*// For Bluetooth
     private static final int REQUEST_ENABLE_BT = 10; // 블루투스 활성화 상태
     private BluetoothAdapter bluetoothAdapter; // 블루투스 어댑터
     private Set<BluetoothDevice> devices; // 블루투스 디바이스 데이터 셋
     private BluetoothDevice bluetoothDevice; // 블루투스 디바이스
     private BluetoothSocket bluetoothSocket = null; // 블루투스 소켓
     private OutputStream outputStream = null; // 블루투스에 데이터를 출력하기 위한 출력 스트림
-    int pariedDeviceCount;
+    int pariedDeviceCount;*/
     
     ImageView img_new_cloth;
     
@@ -53,7 +53,7 @@ public class FindActivity extends AppCompatActivity {
         protected void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_find);
-        if(bluetoothAdapter == null) { // 디바이스가 블루투스를 지원하지 않을 때
+        /*if(bluetoothAdapter == null) { // 디바이스가 블루투스를 지원하지 않을 때
             Toast.makeText(FindActivity.this, "디바이스가 블루투스를 지원하지 않습니다.", Toast.LENGTH_SHORT).show();
         }
         else { // 디바이스가 블루투스를 지원 할 때
@@ -65,7 +65,7 @@ public class FindActivity extends AppCompatActivity {
                 // 선택한 값이 onActivityResult 함수에서 콜백된다.
                 startActivityForResult(intent, REQUEST_ENABLE_BT);
             }
-        }
+        }*/
             final RecyclerView recyclerView = findViewById(R.id.find_recyclerview);
             recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         initDatabase();
@@ -157,7 +157,7 @@ public class FindActivity extends AppCompatActivity {
     }
     
     // 블루투스
-    public void selectBluetoothDevice() {
+    /*public void selectBluetoothDevice() {
         // 이미 페어링 되어있는 블루투스 기기를 찾습니다.
         devices = bluetoothAdapter.getBondedDevices();
         // 페어링 된 디바이스의 크기를 저장
@@ -226,5 +226,5 @@ public class FindActivity extends AppCompatActivity {
         }catch(Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }

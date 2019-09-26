@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.stac.hanghangtwo.Entity.ImageUploadInfo
 import com.stac.hanghangtwo.R
 import com.stac.hanghangtwo.exception.BluetoothException
+import com.stac.hanghangtwo.util.BluetoothThread
 import com.stac.hanghangtwo.util.FIND
 import com.stac.hanghangtwo.util.Id
 import java.util.*
@@ -28,28 +29,31 @@ class FindClothAdapter(
     init {
         Id.id = (items.maxBy { it.imageId }?.imageId ?: Id.id)+1
     }
-
+    
     var countDiscardList = 0
     override fun getItemCount() = items.filter { it.imageSign }.size
-
+    
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (!items[position].imageSign) countDiscardList++
         holder.bind(items,position + countDiscardList)
     }
-
+    
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_clothlist, parent, false))
-
+    
     inner class ViewHolder(val v: View) : RecyclerView.ViewHolder(v) {
         val clothName: TextView by lazy { v.findViewById<TextView>(R.id.item_cloth_name) }
         val clothImage: ImageView by lazy { v.findViewById<ImageView>(R.id.item_cloth_image) }
         val clothBackground: ConstraintLayout by lazy { v.findViewById<ConstraintLayout>(R.id.item_cloth_background) }
-
+    
         fun bind(infoList: List<ImageUploadInfo>, idx : Int) {
             val info = infoList[idx]
-
+    
             clothName.text = info.imageName
             Glide.with(v).load(info.imageURL).override(170, 170).into(clothImage)
             clothBackground.setOnClickListener {
+                it.setBackgroundColor(ContextCompat.getColor(v.context, R.color.findSelect))
+                clothName.setTextColor(Color.WHITE)
+                info.imageSign = false
                 try {
                     val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
                             ?: throw BluetoothException("Bluetooth를 지원하지 않거나 켜져있지 않습니다.")
@@ -60,23 +64,14 @@ class FindClothAdapter(
                             .createRfcommSocketToServiceRecord(UUID.fromString(Id.uuid))
                     bluetoothSocket ?: throw BluetoothException("블루투스가 모듈에 연결되어있지 않습니다.")
 
-
                     communicationBluetooth(bluetoothSocket, info.imageId.toByte())
-                    bluetoothSocket.close()
-                } catch (e: BluetoothException) {
-                    Toast.makeText(v.context, e.msg, Toast.LENGTH_SHORT).show()
-                } catch (e: Exception) {
-                    Toast.makeText(v.context, e.message, Toast.LENGTH_SHORT).show()
+                    bluetoothSocket.close()                    BluetoothThread(bluetoothSocket,info.imageId.toByte()).start()
+                    } catch (e: BluetoothException) {
+                        Toast.makeText(v.context, e.msg, Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception) {
+                        Toast.makeText(v.context, e.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
-                it.setBackgroundColor(ContextCompat.getColor(v.context, R.color.findSelect))
-                clothName.setTextColor(Color.WHITE)
-                info.imageSign = false
             }
         }
-
-        fun communicationBluetooth(socket: BluetoothSocket, item : Byte) {
-            val outputStream = socket.outputStream
-            outputStream.write(byteArrayOf(FIND or item))
-        }
     }
-}

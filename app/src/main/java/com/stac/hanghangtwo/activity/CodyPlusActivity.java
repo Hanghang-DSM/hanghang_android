@@ -36,6 +36,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.stac.hanghangtwo.Entity.ImageUploadInfo;
 import com.stac.hanghangtwo.util.BluetoothCodeKt;
+import com.stac.hanghangtwo.util.BluetoothThread;
 import com.stac.hanghangtwo.util.Id;
 import com.stac.hanghangtwo.R;
 
@@ -334,9 +335,9 @@ public class CodyPlusActivity extends AppCompatActivity {
 
     void sendData(int b) {
         try{
-            byte[] data = new byte[]{(byte)(b | BluetoothCodeKt.SET)};
+            byte data = (byte)(b | BluetoothCodeKt.SET);
             // 데이터 송신
-            outputStream.write(data);
+            new BluetoothThread(bluetoothSocket,data).start();
         }catch(Exception e) {
             e.printStackTrace();
         }
