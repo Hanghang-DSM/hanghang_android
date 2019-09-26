@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.stac.hanghangtwo.Entity.ImageUploadInfo
 import com.stac.hanghangtwo.R
 import com.stac.hanghangtwo.exception.BluetoothException
+import com.stac.hanghangtwo.util.BluetoothThread
 import com.stac.hanghangtwo.util.FIND
 import com.stac.hanghangtwo.util.Id
 import java.util.*
@@ -50,6 +51,9 @@ class FindClothAdapter(
             clothName.text = info.imageName
             Glide.with(v).load(info.imageURL).override(170, 170).into(clothImage)
             clothBackground.setOnClickListener {
+                it.setBackgroundColor(ContextCompat.getColor(v.context, R.color.findSelect))
+                clothName.setTextColor(Color.WHITE)
+                info.imageSign = false
                 try {
                     val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
                             ?: throw BluetoothException("Bluetooth를 지원하지 않거나 켜져있지 않습니다.")
@@ -60,23 +64,13 @@ class FindClothAdapter(
                             .createRfcommSocketToServiceRecord(UUID.fromString(Id.uuid))
                     bluetoothSocket ?: throw BluetoothException("블루투스가 모듈에 연결되어있지 않습니다.")
 
-
-                    communicationBluetooth(bluetoothSocket, info.imageId.toByte())
-                    bluetoothSocket.close() 
+                    BluetoothThread(bluetoothSocket,info.imageId.toByte()).start()
                 } catch (e: BluetoothException) {
                     Toast.makeText(v.context, e.msg, Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     Toast.makeText(v.context, e.message, Toast.LENGTH_SHORT).show()
                 }
-                it.setBackgroundColor(ContextCompat.getColor(v.context, R.color.findSelect))
-                clothName.setTextColor(Color.WHITE)
-                info.imageSign = false
             }
-        }
-
-        fun communicationBluetooth(socket: BluetoothSocket, item : Byte) {
-            val outputStream = socket.outputStream
-            outputStream.write(byteArrayOf(FIND or item))
         }
     }
 }
