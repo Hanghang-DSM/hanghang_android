@@ -9,12 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.stac.hanghangtwo.Entity.ImageUploadInfo
 import com.stac.hanghangtwo.R
+import com.stac.hanghangtwo.exception.BluetoothException
 import com.stac.hanghangtwo.util.Id
 import java.util.*
 
@@ -41,20 +43,28 @@ class FindClothAdapter (
 
         fun bind(info : ImageUploadInfo) {
             clothName.text = info.imageName
-            Glide.with(this@FindClothAdapter.context).load(info.imageURL).override(170,170).into(clothImage)
+            Glide.with(v).load(info.imageURL).override(170,170).into(clothImage)
             clothBackground.setOnClickListener {
                 it.setBackgroundColor(ContextCompat.getColor(v.context,R.color.findSelect))
                 clothName.setTextColor(Color.WHITE)
-                val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-                val bluetoothSocket = bluetoothAdapter
-                        .bondedDevices
-                        .filter { it.name=="HANGHANG" }
-                        .get(0)
-                        .createRfcommSocketToServiceRecord(UUID.fromString(Id.uuid))
-                bluetoothSocket.connect()
-                communicationBluetooth(bluetoothSocket)
+                try {
+                    val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+                            ?: throw BluetoothException("Bluetooth를 지원하지 않거나 켜져있지 않습니다.")
+                    val bluetoothSocket: BluetoothSocket? = bluetoothAdapter
+                            .bondedDevices
+                            .filter { it.name == "HANGHANG" }
+                            .get(0)
+                            .createRfcommSocketToServiceRecord(UUID.fromString(Id.uuid))
+                    bluetoothSocket ?: throw BluetoothException("블루투스가 모듈에 연결되어있지 않습니다.")
+                    bluetoothSocket.connect()
+                    communicationBluetooth(bluetoothSocket)
 
-                bluetoothSocket.close()
+                    bluetoothSocket.close()
+                } catch (e : BluetoothException) {
+                    Toast.makeText(v.context,e.msg,Toast.LENGTH_SHORT).show()
+                } catch (e : Exception) {
+                    Toast.makeText(v.context,e.message,Toast.LENGTH_SHORT).show()
+                }
             }
         }
         fun communicationBluetooth(socket : BluetoothSocket) {
