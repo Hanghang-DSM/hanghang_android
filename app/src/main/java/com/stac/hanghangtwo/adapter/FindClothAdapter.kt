@@ -64,8 +64,7 @@ class FindClothAdapter(
                             .createRfcommSocketToServiceRecord(UUID.fromString(Id.uuid))
                     bluetoothSocket ?: throw BluetoothException("블루투스가 모듈에 연결되어있지 않습니다.")
 
-                    communicationBluetooth(bluetoothSocket, info.imageId.toByte())
-                    bluetoothSocket.close()                    BluetoothThread(bluetoothSocket,info.imageId.toByte()).start()
+                    BluetoothThread(bluetoothSocket,info.imageId.toByte()).start()
                     } catch (e: BluetoothException) {
                         Toast.makeText(v.context, e.msg, Toast.LENGTH_SHORT).show()
                     } catch (e: Exception) {

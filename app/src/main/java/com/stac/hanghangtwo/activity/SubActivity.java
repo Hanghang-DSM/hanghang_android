@@ -44,7 +44,8 @@ public class SubActivity extends AppCompatActivity {
         img_cody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
+                Intent intent = new Intent(SubActivity.this, MyCodyActivity.class);
+                startActivity(intent);
             }
         });
 
