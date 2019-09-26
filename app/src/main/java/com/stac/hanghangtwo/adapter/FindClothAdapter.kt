@@ -20,25 +20,19 @@ import java.util.*
 
 class FindClothAdapter (
         val context : Context,
-        val items : List<ImageUploadInfo>
+        val allItems : List<ImageUploadInfo>
 ) : RecyclerView.Adapter<FindClothAdapter.ViewHolder>() {
 
     var countIsWearFalse = 0
+    val items by lazy { allItems.filter { it.imageSign } }
 
-    override fun getItemCount(): Int {
-        return items.filter {
-            it.imageSign
-        }.size
-    }
+    override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(!items[position].imageSign) countIsWearFalse++
-        holder.bind(items[position + countIsWearFalse])
+        holder.bind(items[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_clothlist,parent,false))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_clothlist,parent,false))
 
     inner class ViewHolder (val v : View) : RecyclerView.ViewHolder(v) {
         val clothName : TextView by lazy { v.findViewById<TextView>(R.id.item_cloth_name) }
