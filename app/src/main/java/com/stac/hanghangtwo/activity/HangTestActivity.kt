@@ -34,25 +34,11 @@ class HangTestActivity : AppCompatActivity() {
         mReference!!.child("log").setValue("check")
 
         mChild = object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-
-            }
-
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
-
-            }
-
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-
-            }
-
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {
-
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-
-            }
+            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {}
+            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
+            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+            override fun onCancelled(databaseError: DatabaseError) {}
         }
         mReference!!.addChildEventListener(mChild!!)
     }
