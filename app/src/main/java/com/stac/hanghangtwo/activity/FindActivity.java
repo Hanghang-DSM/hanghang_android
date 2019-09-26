@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -32,7 +31,6 @@ import com.google.gson.Gson;
 import com.stac.hanghangtwo.Entity.ImageUploadInfo;
 import com.stac.hanghangtwo.R;
 import com.stac.hanghangtwo.adapter.FindClothAdapter;
-import com.stac.hanghangtwo.util.Id;
 
 public class FindActivity extends AppCompatActivity {
     // For Bluetooth
