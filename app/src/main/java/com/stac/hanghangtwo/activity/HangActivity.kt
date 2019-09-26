@@ -17,5 +17,7 @@ class HangActivity : BaseActivity<ActivityHangBinding>(R.layout.activity_hang) {
         super.onCreate(savedInstanceState)
         binding.hangRecyclerview.adapter = HangClothAdapter(this,items)
         binding.hangRecyclerview.layoutManager = LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
+
+
     }
 }
