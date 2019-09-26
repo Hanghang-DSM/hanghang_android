@@ -12,14 +12,15 @@ import com.bumptech.glide.Glide
 import com.stac.hanghangtwo.Entity.ImageUploadInfo
 import com.stac.hanghangtwo.R
 
-class HangClothAdapter(val context : Context, val allItems : List<ImageUploadInfo>) : RecyclerView.Adapter<HangClothAdapter.ViewHolder>() {
+class HangClothAdapter(val context : Context, val items : List<ImageUploadInfo>) : RecyclerView.Adapter<HangClothAdapter.ViewHolder>() {
 
-    val items by lazy { allItems.filter { !it.imageSign } }
+    var countDiscardList = 0
 
-    override fun getItemCount() = items.size
+    override fun getItemCount() = items.filter { !it.imageSign }.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
+        if(items[position].imageSign) countDiscardList++
+        holder.bind(items[position + countDiscardList])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
