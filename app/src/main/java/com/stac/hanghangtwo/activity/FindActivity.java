@@ -74,12 +74,11 @@ public class FindActivity extends AppCompatActivity {
         mReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Gson gson = new Gson();
                 for (DataSnapshot photoData : dataSnapshot.getChildren()) {
                     ImageUploadInfo imageName = photoData.getValue(ImageUploadInfo.class);
                     Array.add(imageName);
                 }
-                recyclerView.setAdapter(new FindClothAdapter(FindActivity.this,Array));
+                recyclerView.setAdapter(new FindClothAdapter(Array));
             }
     
             @Override

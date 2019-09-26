@@ -1,18 +1,27 @@
 package com.stac.hanghangtwo.adapter
 
-import android.content.Context
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothSocket
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.stac.hanghangtwo.Entity.ImageUploadInfo
 import com.stac.hanghangtwo.R
+import com.stac.hanghangtwo.exception.BluetoothException
+import com.stac.hanghangtwo.util.Id
+import com.stac.hanghangtwo.util.SET
+import java.util.*
+import kotlin.experimental.or
 
-class HangClothAdapter(val context : Context, val items : List<ImageUploadInfo>) : RecyclerView.Adapter<HangClothAdapter.ViewHolder>() {
+class HangClothAdapter(val items : List<ImageUploadInfo>) : RecyclerView.Adapter<HangClothAdapter.ViewHolder>() {
 
     var countDiscardList = 0
 
@@ -20,7 +29,7 @@ class HangClothAdapter(val context : Context, val items : List<ImageUploadInfo>)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if(items[position].imageSign) countDiscardList++
-        holder.bind(items[position + countDiscardList])
+        holder.bind(items,position + countDiscardList)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,13 +39,39 @@ class HangClothAdapter(val context : Context, val items : List<ImageUploadInfo>)
     class ViewHolder(val v : View) : RecyclerView.ViewHolder(v) {
         val clothName = v.findViewById<TextView>(R.id.item_cloth_name)
         val clothImage = v.findViewById<ImageView>(R.id.item_cloth_image)
-        val background = v.findViewById<ConstraintLayout>(R.id.item_cloth_background)
-        fun bind(item : ImageUploadInfo) {
-            clothName.text = item.imageName
-            Glide.with(v).load(item.imageURL).override(170,170).into(clothImage)
-            background.setOnClickListener {
+        val clothBackground = v.findViewById<ConstraintLayout>(R.id.item_cloth_background)
+        fun bind(infoList : List<ImageUploadInfo>, idx : Int) {
+            val info = infoList[idx]
 
+            clothName.text = info.imageName
+            Glide.with(v).load(info.imageURL).override(170, 170).into(clothImage)
+            clothBackground.setOnClickListener {
+                try {
+                    val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+                            ?: throw BluetoothException("Bluetooth를 지원하지 않거나 켜져있지 않습니다.")
+                    val bluetoothSocket: BluetoothSocket? = bluetoothAdapter
+                            .bondedDevices
+                            .filter { it.name == "HANGHANG" }
+                            .get(0)
+                            .createRfcommSocketToServiceRecord(UUID.fromString(Id.uuid))
+                    bluetoothSocket ?: throw BluetoothException("블루투스가 모듈에 연결되어있지 않습니다.")
+
+
+                    communicationBluetooth(bluetoothSocket,info.imageId.toByte())
+                    bluetoothSocket.close()
+                } catch (e: BluetoothException) {
+                    Toast.makeText(v.context, e.msg, Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(v.context, e.message, Toast.LENGTH_SHORT).show()
+                }
+                it.setBackgroundColor(ContextCompat.getColor(v.context, R.color.findSelect))
+                clothName.setTextColor(Color.WHITE)
+                info.imageSign = true
             }
+        }
+        fun communicationBluetooth(socket: BluetoothSocket, item : Byte) {
+            val outputStream = socket.outputStream
+            outputStream.write(byteArrayOf(SET or item))
         }
     }
 }

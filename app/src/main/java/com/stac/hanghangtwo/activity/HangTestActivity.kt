@@ -1,24 +1,27 @@
-package com.stac.hanghangtwo.activity
+/*package com.stac.hanghangtwo.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.*
 
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.stac.hanghangtwo.Entity.ImageUploadInfo
+import com.stac.hanghangtwo.adapter.FindClothAdapter
 
 import java.util.ArrayList
 
 class HangTestActivity : AppCompatActivity() {
 
-    private var mDatabase: FirebaseDatabase? = null
-    private var mReference: DatabaseReference? = null
-    private var mChild: ChildEventListener? = null
+    val mDatabase: FirebaseDatabase by lazy { FirebaseDatabase.getInstance() }
+    lateinit var mReference: DatabaseReference
+    val mChild: ChildEventListener = object : ChildEventListener {
+        override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {}
+        override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
+        override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
+        override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+        override fun onCancelled(databaseError: DatabaseError) {}
+    }
 
-    internal var Array: List<ImageUploadInfo> = ArrayList()
+    val array: ArrayList<ImageUploadInfo> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,27 +30,32 @@ class HangTestActivity : AppCompatActivity() {
     }
 
     private fun initDatabase() {
+        mReference = mDatabase.getReference("log")
+        mReference.child("log").setValue("check")
 
-        mDatabase = FirebaseDatabase.getInstance()
+        mReference.addChildEventListener(mChild)
 
-        mReference = mDatabase!!.getReference("log")
-        mReference!!.child("log").setValue("check")
+        mReference = mDatabase.getReference("All_Image_Uploads_Database") // 변경값을 확인할 child 이름
+        mReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (photoData in dataSnapshot.children) {
+                    val imageName = photoData.getValue(ImageUploadInfo::class.java) ?: ImageUploadInfo("Error","",-1,true)
+                    array.add(imageName)
+                }
+                recyclerView.setAdapter(FindClothAdapter(array))
+            }
 
-        mChild = object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onCancelled(databaseError: DatabaseError) {}
-        }
-        mReference!!.addChildEventListener(mChild!!)
+            override fun onCancelled(databaseError: DatabaseError) {
+
+            }
+        })
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         mReference = FirebaseDatabase.getInstance().getReference("All_Image_Uploads_Database")
-        mReference!!.setValue(null)
+        mReference.setValue(null)
 
         for (item in Array) {
 
@@ -55,14 +63,15 @@ class HangTestActivity : AppCompatActivity() {
                     item.imageURL, item.imageId, item.imageSign)
 
             // Getting image upload ID.
-            val ImageUploadId = mReference!!.child("All_Image_Uploads_Database").push().key
+            val ImageUploadId = mReference.child("All_Image_Uploads_Database").push().key
 
             // Adding image upload id s child element into databaseReference.
-            mReference!!.child(ImageUploadId!!).setValue(imageUploadInfo)
+            mReference.child(ImageUploadId!!).setValue(imageUploadInfo)
 
         }
 
-        mReference!!.removeEventListener(mChild!!)
+        mReference.removeEventListener(mChild)
     }
 
 }
+*/
