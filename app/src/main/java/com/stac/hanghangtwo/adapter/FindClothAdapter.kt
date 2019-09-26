@@ -20,16 +20,15 @@ import java.util.*
 
 class FindClothAdapter (
         val context : Context,
-        val allItems : List<ImageUploadInfo>
+        val items : List<ImageUploadInfo>
 ) : RecyclerView.Adapter<FindClothAdapter.ViewHolder>() {
 
-    var countIsWearFalse = 0
-    val items by lazy { allItems.filter { it.imageSign } }
-
-    override fun getItemCount() = items.size
+    var countDiscardList = 0
+    override fun getItemCount() = items.filter { it.imageSign }.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
+        if(!items[position].imageSign) countDiscardList++
+        holder.bind(items[position + countDiscardList])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_clothlist,parent,false))
@@ -40,11 +39,14 @@ class FindClothAdapter (
         val clothBackground : ConstraintLayout by lazy { v.findViewById<ConstraintLayout>(R.id.item_cloth_background)}
 
         fun bind(info : ImageUploadInfo) {
+
             clothName.text = info.imageName
             Glide.with(this@FindClothAdapter.context).load(info.imageURL).override(170,170).into(clothImage)
+
             clothBackground.setOnClickListener {
                 it.setBackgroundColor(ContextCompat.getColor(v.context,R.color.findSelect))
                 clothName.setTextColor(Color.WHITE)
+
                 val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
                 val bluetoothSocket = bluetoothAdapter
                         .bondedDevices
@@ -52,6 +54,7 @@ class FindClothAdapter (
                         .get(0)
                         .createRfcommSocketToServiceRecord(UUID.fromString(Id.uuid))
                 bluetoothSocket.connect()
+                
                 communicationBluetooth(bluetoothSocket)
 
                 bluetoothSocket.close()
