@@ -32,29 +32,29 @@ class FindClothAdapter (
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(!items[position].imageSign) countIsWearFalse++
+        if (!items[position].imageSign) countIsWearFalse++
         holder.bind(items[position + countIsWearFalse])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_clothlist,parent,false))
+        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_clothlist, parent, false))
     }
 
-    inner class ViewHolder (val v : View) : RecyclerView.ViewHolder(v) {
-        val clothName : TextView by lazy { v.findViewById<TextView>(R.id.item_cloth_name) }
-        val clothImage : ImageView by lazy { v.findViewById<ImageView>(R.id.item_cloth_image) }
-        val clothBackground : ConstraintLayout by lazy { v.findViewById<ConstraintLayout>(R.id.item_cloth_background)}
+    inner class ViewHolder(val v: View) : RecyclerView.ViewHolder(v) {
+        val clothName: TextView by lazy { v.findViewById<TextView>(R.id.item_cloth_name) }
+        val clothImage: ImageView by lazy { v.findViewById<ImageView>(R.id.item_cloth_image) }
+        val clothBackground: ConstraintLayout by lazy { v.findViewById<ConstraintLayout>(R.id.item_cloth_background) }
 
-        fun bind(info : ImageUploadInfo) {
+        fun bind(info: ImageUploadInfo) {
             clothName.text = info.imageName
-            Glide.with(this@FindClothAdapter.context).load(info.imageURL).override(170,170).into(clothImage)
+            Glide.with(this@FindClothAdapter.context).load(info.imageURL).override(170, 170).into(clothImage)
             clothBackground.setOnClickListener {
-                it.setBackgroundColor(ContextCompat.getColor(v.context,R.color.findSelect))
+                it.setBackgroundColor(ContextCompat.getColor(v.context, R.color.findSelect))
                 clothName.setTextColor(Color.WHITE)
                 val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
                 val bluetoothSocket = bluetoothAdapter
                         .bondedDevices
-                        .filter { it.name=="HANGHANG" }
+                        .filter { it.name == "HANGHANG" }
                         .get(0)
                         .createRfcommSocketToServiceRecord(UUID.fromString(Id.uuid))
                 bluetoothSocket.connect()
@@ -63,7 +63,8 @@ class FindClothAdapter (
                 bluetoothSocket.close()
             }
         }
-        fun communicationBluetooth(socket : BluetoothSocket) {
+
+        fun communicationBluetooth(socket: BluetoothSocket) {
             val inputStream = socket.inputStream
             val outputStream = socket.outputStream
         }

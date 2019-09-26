@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "511176937666-sut80f728222ts7aneqe9gc066ddsdof.apps.googleusercontent.com",
+          "client_id": "511176937666-2d5ebepshd8a5m97skbqcdufqbjgjg5g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.stac.hanghangtwo",
-            "certificate_hash": "8c9f0994ed35a7c007035bf3ee94ab555bc1c27c"
+            "certificate_hash": "ad6e1a38040a35787dc5c6d72d74555c91f9f9d6"
           }
         },
         {
