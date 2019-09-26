@@ -41,9 +41,9 @@ class FindClothAdapter (
     }
 
     inner class ViewHolder (val v : View) : RecyclerView.ViewHolder(v) {
-        val clothName : TextView by lazy { v.findViewById(R.id.item_cloth_name) }
-        val clothImage : ImageView by lazy { v.findViewById(R.id.item_cloth_image) }
-        val clothBackground : ConstraintLayout by lazy { v.findViewById(R.id.item_cloth_background)}
+        val clothName : TextView by lazy { v.findViewById<TextView>(R.id.item_cloth_name) }
+        val clothImage : ImageView by lazy { v.findViewById<ImageView>(R.id.item_cloth_image) }
+        val clothBackground : ConstraintLayout by lazy { v.findViewById<ConstraintLayout>(R.id.item_cloth_background)}
 
         fun bind(info : ImageUploadInfo) {
             clothName.text = info.imageName
