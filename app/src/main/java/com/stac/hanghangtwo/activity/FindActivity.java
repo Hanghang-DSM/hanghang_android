@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import com.google.gson.Gson;
 import com.stac.hanghangtwo.Entity.ImageUploadInfo;
 import com.stac.hanghangtwo.R;
 import com.stac.hanghangtwo.adapter.FindClothAdapter;
+import com.stac.hanghangtwo.util.Id;
 
 public class FindActivity extends AppCompatActivity {
     // For Bluetooth
@@ -49,12 +51,10 @@ public class FindActivity extends AppCompatActivity {
     private ChildEventListener mChild;
     
     List<ImageUploadInfo> Array = new ArrayList<>();
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_find);
-
+        @Override
+        protected void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_find);
         if(bluetoothAdapter == null) { // 디바이스가 블루투스를 지원하지 않을 때
             Toast.makeText(FindActivity.this, "디바이스가 블루투스를 지원하지 않습니다.", Toast.LENGTH_SHORT).show();
         }
@@ -78,7 +78,7 @@ public class FindActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Gson gson = new Gson();
                 for (DataSnapshot photoData : dataSnapshot.getChildren()) {
-                    ImageUploadInfo imageName = gson.fromJson(photoData.getValue().toString(),ImageUploadInfo.class);
+                    ImageUploadInfo imageName = photoData.getValue(ImageUploadInfo.class);
                     Array.add(imageName);
                 }
                 recyclerView.setAdapter(new FindClothAdapter(FindActivity.this,Array));
@@ -139,6 +139,23 @@ public class FindActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    
+        mReference = FirebaseDatabase.getInstance().getReference("All_Image_Uploads_Database");
+        mReference.child("All_Image_Uploads_Database").removeValue();
+    
+        for(ImageUploadInfo item : Array) {
+    
+            ImageUploadInfo imageUploadInfo = new ImageUploadInfo(item.imageName,
+                    item.imageURL, item.imageId, item.imageSign);
+    
+            // Getting image upload ID.
+            String ImageUploadId = mReference.child("All_Image_Uploads_Database").push().getKey();
+    
+            // Adding image upload id s child element into databaseReference.
+            mReference.child(ImageUploadId).setValue(imageUploadInfo);
+    
+        }
+    
         mReference.removeEventListener(mChild);
     }
     
