@@ -61,7 +61,7 @@ class HangTestActivity : AppCompatActivity() {
         super.onDestroy()
 
         mReference = FirebaseDatabase.getInstance().getReference("All_Image_Uploads_Database")
-        mReference!!.child("All_Image_Uploads_Database").removeValue()
+        mReference!!.setValue(null)
 
         for (item in Array) {
 
